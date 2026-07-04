@@ -116,10 +116,12 @@ st.markdown(
         /* O Streamlit força min-width quase 100% nas colunas em telas
            estreitas, o que empilha os botões verticalmente. Isso
            sobrescreve esse comportamento SÓ dentro da grade de cartas de
-           cada naipe, para manter as cartas lado a lado. As colunas que
-           colocam os naipes em pares (fora daqui) continuam empilhando
+           cada naipe (para manter as cartas lado a lado) e no cabeçalho
+           (para o título e o botão Nova Rodada continuarem na mesma linha).
+           As colunas que colocam os naipes em pares continuam empilhando
            normalmente no celular. */
-        [class*="st-key-naipe_"] div.stColumn {
+        [class*="st-key-naipe_"] div.stColumn,
+        [class*="st-key-header_row"] div.stColumn {
             min-width: 30px !important;
         }
 
@@ -146,14 +148,22 @@ st.markdown(
     </style>
 
     <style>
-    /* ===== BOTÃO "NOVA RODADA" — visual de mesa de poker, efeito 3D ===== */
+    /* ===== BOTÃO "NOVA RODADA" — visual de mesa de poker, quadrado, efeito 3D ===== */
     .st-key-reset_container div.stButton > button {
+        aspect-ratio: 1;
+        width: 92px !important;
+        margin: 0 auto;
+        display: flex !important;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0;
         background: linear-gradient(180deg, #1f8b52 0%, #146538 60%, #0f4d2b 100%) !important;
         border: 2px solid #d4af37 !important;
-        border-radius: 999px !important;
+        border-radius: 14px !important;
         color: #fdf6e3 !important;
         font-weight: 700 !important;
-        letter-spacing: 0.03em;
+        letter-spacing: 0.02em;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
         box-shadow:
             0 4px 0 #0a3a1f,
@@ -162,10 +172,30 @@ st.markdown(
         transition: transform 0.08s ease, box-shadow 0.08s ease;
     }
 
+    /* ícone de loop (primeiro parágrafo) — grande, girando suavemente no hover */
+    .st-key-reset_container div.stButton > button p:first-child {
+        font-size: 1.9em;
+        margin: 0 !important;
+        line-height: 1;
+        transition: transform 0.3s ease;
+    }
+
+    /* texto "Nova Rodada" (segundo parágrafo) — pequeno, abaixo do ícone */
+    .st-key-reset_container div.stButton > button p:last-child {
+        font-size: 0.62em;
+        margin: 0.15rem 0 0 0 !important;
+        line-height: 1.05;
+        text-transform: uppercase;
+    }
+
     .st-key-reset_container div.stButton > button:hover {
         background: linear-gradient(180deg, #24a05f 0%, #17753f 60%, #114f2c 100%) !important;
         border-color: #f0cf6b !important;
         color: #fffdf5 !important;
+    }
+
+    .st-key-reset_container div.stButton > button:hover p:first-child {
+        transform: rotate(75deg);
     }
 
     .st-key-reset_container div.stButton > button:active {
@@ -174,6 +204,20 @@ st.markdown(
             0 1px 0 #0a3a1f,
             0 2px 4px rgba(0, 0, 0, 0.35),
             inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    }
+
+    @media (max-width: 640px) {
+        .st-key-reset_container div.stButton > button {
+            width: 56px !important;
+        }
+
+        .st-key-reset_container div.stButton > button p:first-child {
+            font-size: 1.4em;
+        }
+
+        .st-key-reset_container div.stButton > button p:last-child {
+            font-size: 0.5em;
+        }
     }
     </style>
     """,
@@ -305,15 +349,16 @@ def resetar():
 # CABEÇALHO
 # =========================
 
-col_titulo, col_reset = st.columns([5, 1])
+with st.container(key="header_row"):
+    col_titulo, col_reset = st.columns([5, 1])
 
-with col_titulo:
-    st.title("🃏 Calculadora de Poker")
+    with col_titulo:
+        st.title("🃏 Calculadora de Poker")
 
-with col_reset:
-    st.write("")
-    with st.container(key="reset_container"):
-        st.button("🔄 Nova Rodada", on_click=resetar, use_container_width=True)
+    with col_reset:
+        st.write("")
+        with st.container(key="reset_container"):
+            st.button("↻\n\nNova Rodada", on_click=resetar, use_container_width=True)
 
 cartas = st.session_state.cartas_selecionadas
 mao = cartas[:2]
