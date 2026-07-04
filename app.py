@@ -14,6 +14,38 @@ st.set_page_config(
 evaluator = Evaluator()
 
 # =========================
+# CSS RESPONSIVO (deixa os botões menores em telas estreitas)
+# =========================
+
+st.markdown(
+    """
+    <style>
+    div.stButton > button {
+        padding: 0.2rem 0.1rem;
+        font-size: 0.95rem;
+        min-height: 2.6rem;
+        line-height: 1.1;
+    }
+
+    @media (max-width: 640px) {
+        div.stButton > button {
+            font-size: 0.72rem;
+            min-height: 2.1rem;
+            padding: 0.05rem 0rem;
+        }
+        h1 {
+            font-size: 1.5rem !important;
+        }
+        h3 {
+            font-size: 1.05rem !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# =========================
 # SÍMBOLOS
 # =========================
 
@@ -225,24 +257,31 @@ naipes_info = [
     ("p", "PAUS")
 ]
 
+CARTAS_POR_LINHA = 7  # 13 cartas viram 2 linhas (7 + 6) em vez de 1 linha de 13
+
+def dividir_em_linhas(lista, tamanho):
+    return [lista[i:i + tamanho] for i in range(0, len(lista), tamanho)]
+
 for naipe, nome_naipe in naipes_info:
     st.markdown(f"**{nome_naipe}**")
-    colunas = st.columns(13)
 
-    for i, valor in enumerate(valores):
-        carta = valor + naipe
-        selecionada = carta in cartas
+    for linha_valores in dividir_em_linhas(valores, CARTAS_POR_LINHA):
+        colunas = st.columns(len(linha_valores), gap="small")
 
-        label = f"{valor}{simbolos[naipe]}"
-        if selecionada:
-            label = f"✅ {label}"
+        for i, valor in enumerate(linha_valores):
+            carta = valor + naipe
+            selecionada = carta in cartas
 
-        with colunas[i]:
-            st.button(
-                label,
-                key=f"btn_{carta}",
-                on_click=selecionar_carta,
-                args=(carta,),
-                disabled=selecionada,
-                use_container_width=True
-            )
+            label = f"{valor}{simbolos[naipe]}"
+            if selecionada:
+                label = f"✅ {label}"
+
+            with colunas[i]:
+                st.button(
+                    label,
+                    key=f"btn_{carta}",
+                    on_click=selecionar_carta,
+                    args=(carta,),
+                    disabled=selecionada,
+                    use_container_width=True
+                )
