@@ -235,6 +235,9 @@ simbolos = {
     "p": "♣"
 }
 
+NAIPES_VERMELHOS = {"c", "o"}  # copas e ouros ficam com o texto em vermelho
+COR_VERMELHA = "#e0392b"
+
 # =========================
 # ESTADO (equivalente às variáveis globais do customtkinter)
 # =========================
@@ -250,7 +253,12 @@ def formatar_carta_visual(carta):
     valor = carta[0]
     naipe = carta[1]
     simbolo = simbolos[naipe]
-    return f"{valor}{simbolo}"
+    texto = f"{valor}{simbolo}"
+
+    if naipe in NAIPES_VERMELHOS:
+        return f'<span style="color: {COR_VERMELHA};">{texto}</span>'
+
+    return texto
 
 # =========================
 # FUNÇÕES POKER (idênticas ao código original)
@@ -370,7 +378,8 @@ board_visual = [formatar_carta_visual(c) for c in board]
 st.markdown(
     f"### Sua mão: {' '.join(mao_visual) if mao_visual else '—'}"
     f"&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;"
-    f"Mesa: {' '.join(board_visual) if board_visual else '—'}"
+    f"Mesa: {' '.join(board_visual) if board_visual else '—'}",
+    unsafe_allow_html=True
 )
 
 # =========================
@@ -437,8 +446,6 @@ naipes_info = [
     ("p", "PAUS"),
     ("o", "OUROS")
 ]
-
-NAIPES_VERMELHOS = {"c", "o"}  # copas e ouros ficam com o texto em vermelho
 
 CARTAS_POR_LINHA = 7  # 13 cartas viram 2 linhas (7 + 6) em vez de 1 linha de 13
 
