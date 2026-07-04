@@ -115,8 +115,11 @@ st.markdown(
 
         /* O Streamlit força min-width quase 100% nas colunas em telas
            estreitas, o que empilha os botões verticalmente. Isso
-           sobrescreve esse comportamento para manter as cartas lado a lado. */
-        div.stColumn {
+           sobrescreve esse comportamento SÓ dentro da grade de cartas de
+           cada naipe, para manter as cartas lado a lado. As colunas que
+           colocam os naipes em pares (fora daqui) continuam empilhando
+           normalmente no celular. */
+        [class*="st-key-naipe_"] div.stColumn {
             min-width: 30px !important;
         }
 
@@ -397,7 +400,7 @@ CARTAS_POR_LINHA = 7  # 13 cartas viram 2 linhas (7 + 6) em vez de 1 linha de 13
 def dividir_em_linhas(lista, tamanho):
     return [lista[i:i + tamanho] for i in range(0, len(lista), tamanho)]
 
-for naipe, nome_naipe in naipes_info:
+def renderizar_naipe(naipe, nome_naipe):
     st.markdown(f"**{nome_naipe}**")
 
     with st.container(key=f"naipe_{naipe}"):
@@ -419,3 +422,21 @@ for naipe, nome_naipe in naipes_info:
                         disabled=selecionada,
                         use_container_width=True
                     )
+
+
+# Agrupa os naipes em pares (ESPADAS+COPAS, PAUS+OUROS). No desktop, o
+# st.columns(2) coloca cada par lado a lado. No celular, o Streamlit já
+# empilha colunas automaticamente em telas estreitas — como não sobrescrevemos
+# esse comportamento aqui (só fizemos isso dentro da grade de cartas), cada
+# naipe continua ocupando a linha inteira, um por vez, igual antes.
+for naipe_esq, naipe_dir in [
+    (naipes_info[0], naipes_info[1]),
+    (naipes_info[2], naipes_info[3]),
+]:
+    col_esq, col_dir = st.columns(2, gap="large")
+
+    with col_esq:
+        renderizar_naipe(*naipe_esq)
+
+    with col_dir:
+        renderizar_naipe(*naipe_dir)
