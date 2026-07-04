@@ -33,7 +33,8 @@ st.markdown(
     [class*="st-key-naipe_"] div.stButton > button {
         position: relative;
         aspect-ratio: 0.68;
-        width: 100%;
+        width: 58px !important;
+        margin: 0 auto;
         min-height: 0;
         background-color: #ffffff !important;
         border: 1px solid #d0d0d0 !important;
@@ -112,6 +113,10 @@ st.markdown(
 
         [class*="st-key-naipe_"] div.stButton > button p:last-child {
             font-size: 1.3em;
+        }
+
+        [class*="st-key-naipe_"] div.stButton > button {
+            width: 40px !important;
         }
     }
     </style>
