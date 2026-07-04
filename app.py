@@ -20,11 +20,70 @@ evaluator = Evaluator()
 st.markdown(
     """
     <style>
+    /* Botões fora da grade de cartas (ex: Nova Rodada) continuam normais */
     div.stButton > button {
         padding: 0.2rem 0.1rem;
         font-size: 0.95rem;
         min-height: 2.6rem;
         line-height: 1.1;
+    }
+
+    /* ===== VISUAL DE CARTA DE BARALHO ===== */
+    /* Só se aplica aos botões dentro dos containers de naipe */
+    [class*="st-key-naipe_"] div.stButton > button {
+        position: relative;
+        aspect-ratio: 0.68;
+        width: 100%;
+        min-height: 0;
+        background-color: #ffffff !important;
+        border: 1px solid #d0d0d0 !important;
+        border-radius: 10px !important;
+        box-shadow: 0 2px 3px rgba(0, 0, 0, 0.18);
+        display: flex !important;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 0.15rem !important;
+    }
+
+    [class*="st-key-naipe_"] div.stButton > button div[data-testid="stMarkdownContainer"] {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        line-height: 1;
+        gap: 0;
+    }
+
+    /* primeiro parágrafo = valor (A, K, Q...) */
+    [class*="st-key-naipe_"] div.stButton > button p:first-child {
+        font-size: 0.9em;
+        font-weight: 700;
+        margin: 0 !important;
+        color: #222;
+    }
+
+    /* segundo parágrafo = naipe (♠♥♦♣), maior, como no centro da carta */
+    [class*="st-key-naipe_"] div.stButton > button p:last-child {
+        font-size: 1.9em;
+        margin: 0 !important;
+        line-height: 1;
+    }
+
+    /* carta selecionada: destaque azul + marca de check no canto */
+    [class*="st-key-naipe_"] div.stButton > button:disabled {
+        background-color: #eaf4ff !important;
+        border: 2px solid #3498db !important;
+        opacity: 1 !important;
+    }
+
+    [class*="st-key-naipe_"] div.stButton > button:disabled::after {
+        content: "✓";
+        position: absolute;
+        top: 2px;
+        right: 5px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #3498db;
     }
 
     @media (max-width: 640px) {
@@ -45,6 +104,14 @@ st.markdown(
            sobrescreve esse comportamento para manter as cartas lado a lado. */
         div.stColumn {
             min-width: 30px !important;
+        }
+
+        [class*="st-key-naipe_"] div.stButton > button p:first-child {
+            font-size: 0.7em;
+        }
+
+        [class*="st-key-naipe_"] div.stButton > button p:last-child {
+            font-size: 1.3em;
         }
     }
     </style>
@@ -290,9 +357,7 @@ for naipe, nome_naipe in naipes_info:
                 carta = valor + naipe
                 selecionada = carta in cartas
 
-                label = f"{valor}{simbolos[naipe]}"
-                if selecionada:
-                    label = f"✅ {label}"
+                label = f"{valor}\n\n{simbolos[naipe]}"
 
                 with colunas[i]:
                     st.button(
