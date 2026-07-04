@@ -39,6 +39,13 @@ st.markdown(
         h3 {
             font-size: 1.05rem !important;
         }
+
+        /* O Streamlit força min-width quase 100% nas colunas em telas
+           estreitas, o que empilha os botões verticalmente. Isso
+           sobrescreve esse comportamento para manter as cartas lado a lado. */
+        div.stColumn {
+            min-width: 30px !important;
+        }
     }
     </style>
     """,
