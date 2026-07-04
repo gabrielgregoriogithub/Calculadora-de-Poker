@@ -48,6 +48,14 @@ st.markdown(
         }
     }
     </style>
+
+    <style>
+    /* Copas e ouros com o texto em vermelho, como no baralho tradicional */
+    .st-key-naipe_c button p,
+    .st-key-naipe_o button p {
+        color: #e0392b !important;
+    }
+    </style>
     """,
     unsafe_allow_html=True
 )
@@ -260,9 +268,11 @@ valores = [
 naipes_info = [
     ("e", "ESPADAS"),
     ("c", "COPAS"),
-    ("o", "OUROS"),
-    ("p", "PAUS")
+    ("p", "PAUS"),
+    ("o", "OUROS")
 ]
+
+NAIPES_VERMELHOS = {"c", "o"}  # copas e ouros ficam com o texto em vermelho
 
 CARTAS_POR_LINHA = 7  # 13 cartas viram 2 linhas (7 + 6) em vez de 1 linha de 13
 
@@ -272,23 +282,24 @@ def dividir_em_linhas(lista, tamanho):
 for naipe, nome_naipe in naipes_info:
     st.markdown(f"**{nome_naipe}**")
 
-    for linha_valores in dividir_em_linhas(valores, CARTAS_POR_LINHA):
-        colunas = st.columns(len(linha_valores), gap="small")
+    with st.container(key=f"naipe_{naipe}"):
+        for linha_valores in dividir_em_linhas(valores, CARTAS_POR_LINHA):
+            colunas = st.columns(len(linha_valores), gap="small")
 
-        for i, valor in enumerate(linha_valores):
-            carta = valor + naipe
-            selecionada = carta in cartas
+            for i, valor in enumerate(linha_valores):
+                carta = valor + naipe
+                selecionada = carta in cartas
 
-            label = f"{valor}{simbolos[naipe]}"
-            if selecionada:
-                label = f"✅ {label}"
+                label = f"{valor}{simbolos[naipe]}"
+                if selecionada:
+                    label = f"✅ {label}"
 
-            with colunas[i]:
-                st.button(
-                    label,
-                    key=f"btn_{carta}",
-                    on_click=selecionar_carta,
-                    args=(carta,),
-                    disabled=selecionada,
-                    use_container_width=True
-                )
+                with colunas[i]:
+                    st.button(
+                        label,
+                        key=f"btn_{carta}",
+                        on_click=selecionar_carta,
+                        args=(carta,),
+                        disabled=selecionada,
+                        use_container_width=True
+                    )
