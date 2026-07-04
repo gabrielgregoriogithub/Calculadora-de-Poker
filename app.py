@@ -87,6 +87,19 @@ st.markdown(
         color: #3498db;
     }
 
+    /* ===== DESKTOP: agrupa as cartas à esquerda, sem espaçamento gigante ===== */
+    /* Só entra a partir de 641px para não afetar o layout mobile, que já está bom */
+    @media (min-width: 641px) {
+        [class*="st-key-naipe_"] .stHorizontalBlock {
+            justify-content: flex-start !important;
+        }
+        [class*="st-key-naipe_"] .stColumn {
+            flex: 0 0 auto !important;
+            width: auto !important;
+            min-width: 0 !important;
+        }
+    }
+
     @media (max-width: 640px) {
         div.stButton > button {
             font-size: 0.72rem;
