@@ -141,6 +141,38 @@ st.markdown(
         color: #e0392b !important;
     }
     </style>
+
+    <style>
+    /* ===== BOTÃO "NOVA RODADA" — visual de mesa de poker, efeito 3D ===== */
+    .st-key-reset_container div.stButton > button {
+        background: linear-gradient(180deg, #1f8b52 0%, #146538 60%, #0f4d2b 100%) !important;
+        border: 2px solid #d4af37 !important;
+        border-radius: 999px !important;
+        color: #fdf6e3 !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.03em;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+        box-shadow:
+            0 4px 0 #0a3a1f,
+            0 6px 10px rgba(0, 0, 0, 0.35),
+            inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+        transition: transform 0.08s ease, box-shadow 0.08s ease;
+    }
+
+    .st-key-reset_container div.stButton > button:hover {
+        background: linear-gradient(180deg, #24a05f 0%, #17753f 60%, #114f2c 100%) !important;
+        border-color: #f0cf6b !important;
+        color: #fffdf5 !important;
+    }
+
+    .st-key-reset_container div.stButton > button:active {
+        transform: translateY(3px);
+        box-shadow:
+            0 1px 0 #0a3a1f,
+            0 2px 4px rgba(0, 0, 0, 0.35),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    }
+    </style>
     """,
     unsafe_allow_html=True
 )
@@ -277,7 +309,8 @@ with col_titulo:
 
 with col_reset:
     st.write("")
-    st.button("🔄 Nova Rodada", on_click=resetar, use_container_width=True)
+    with st.container(key="reset_container"):
+        st.button("🔄 Nova Rodada", on_click=resetar, use_container_width=True)
 
 cartas = st.session_state.cartas_selecionadas
 mao = cartas[:2]
